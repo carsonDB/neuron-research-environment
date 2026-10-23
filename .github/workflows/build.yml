@@ -20,6 +20,8 @@ jobs:
         run: >-
           docker run --rm ghcr.io/carsondb/neuron-research-environment:cu128-v1
           python -c "import torch,torchvision; assert torch.__version__=='2.11.0+cu128'; assert torchvision.__version__=='0.26.0+cu128'; assert torch.version.cuda=='12.8'; print(torch.__version__,torchvision.__version__)"
+      - name: Ensure no shared SSH host keys are baked in
+        run: docker run --rm ghcr.io/carsondb/neuron-research-environment:cu128-v1 sh -c 'test -z "$(find /etc/ssh -name "ssh_host_*")"'
       - name: Publish environment only
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

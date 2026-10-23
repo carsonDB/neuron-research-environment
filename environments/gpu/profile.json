@@ -7,6 +7,5 @@
   "cuda_runtime": "12.8",
   "image": null,
   "digest": null,
-  "gpu_validated": false,
-  "notes": "Build and push with scripts/environment.py. Set image and immutable digest only after publishing; GPU validation is a separate gate."
+  "gpu_validated": false
 }
