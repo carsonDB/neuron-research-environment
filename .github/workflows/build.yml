@@ -1,0 +1,29 @@
+name: Build dependency-only GPU environment
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  environment:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free space on disposable hosted runner
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          df -h /
+      - name: Build fixed dependencies on CPU
+        run: docker build --platform linux/amd64 -f environments/gpu/Dockerfile --label org.opencontainers.image.source=https://github.com/carsonDB/neuron-research-environment -t ghcr.io/carsondb/neuron-research-environment:cu128-v1 .
+      - name: Verify installed runtime without GPU
+        run: >-
+          docker run --rm ghcr.io/carsondb/neuron-research-environment:cu128-v1
+          python -c "import torch,torchvision; assert torch.__version__=='2.11.0+cu128'; assert torchvision.__version__=='0.26.0+cu128'; assert torch.version.cuda=='12.8'; print(torch.__version__,torchvision.__version__)"
+      - name: Publish environment only
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker push ghcr.io/carsondb/neuron-research-environment:cu128-v1
+          docker image inspect ghcr.io/carsondb/neuron-research-environment:cu128-v1 --format '{{json .RepoDigests}}' | tee -a "$GITHUB_STEP_SUMMARY"

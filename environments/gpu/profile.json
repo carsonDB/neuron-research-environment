@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "name": "layerwise-cu128-py312-v1",
+  "python": "3.12",
+  "torch": "2.11.0+cu128",
+  "torchvision": "0.26.0+cu128",
+  "cuda_runtime": "12.8",
+  "image": null,
+  "digest": null,
+  "gpu_validated": false,
+  "notes": "Build and push with scripts/environment.py. Set image and immutable digest only after publishing; GPU validation is a separate gate."
+}

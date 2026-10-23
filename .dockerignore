@@ -1,0 +1,8 @@
+**
+!requirements/
+!requirements/torch-versions.txt
+!requirements/test-common.txt
+!environments/
+!environments/gpu/
+!environments/gpu/Dockerfile
+!environments/gpu/profile.json
